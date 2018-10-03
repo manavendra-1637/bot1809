@@ -23,9 +23,11 @@ def start(message):
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def answer(message):
+    li = 0
     for item in config.list_buttons:
+        li += 1
         if message.text == item:
-            bot.send_message(message.chat.id, item)
+            bot.send_message(message.chat.id, config.list_answers[li])
 
 if __name__ == '__main__':
      bot.polling(none_stop=True)
