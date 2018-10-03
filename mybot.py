@@ -25,7 +25,6 @@ def start(message):
 def answer(message):
     li = 0
     for item in config.list_buttons:
-        bot.send_message(message.chat.id, str(li))
         if message.text == item:
             bot.send_message(message.chat.id, config.list_answers[li])
         li += 1
