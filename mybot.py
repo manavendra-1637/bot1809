@@ -23,7 +23,7 @@ def start(message):
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def answer(message):
-    for item in config.list_answers:
+    for item in config.list_buttons:
         if message.text == item:
             bot.send_message(message.chat.id, item)
 
