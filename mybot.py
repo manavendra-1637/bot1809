@@ -24,10 +24,15 @@ def start(message):
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def answer(message):
     li = 0
+    found = False
     for item in config.list_buttons:
         if message.text == item:
             bot.send_message(message.chat.id, config.list_answers[li])
+            found = True
         li += 1
+
+    if not found:
+       bot.send_message(config.muid, message.text)
 
 if __name__ == '__main__':
      bot.polling(none_stop=True)
