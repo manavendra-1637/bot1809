@@ -11,6 +11,7 @@
 # -*- coding: utf-8 -*-
 import config
 import telebot
+import requests, bs4
 
 bot = telebot.TeleBot(config.token)
 
@@ -20,6 +21,19 @@ def start(message):
     for item in config.list_buttons:
         keyboard.add(item)
     bot.send_message(message.chat.id, config.greetings, reply_markup=keyboard)
+
+@bot.message_handler(commands=['news'])
+def getnews(message):
+   adrsite = "https://www.newsvl.ru"
+   site = requests.get(adrsite)
+   parse = bs4.BeautifulSoup(site.text, "html.parser")
+   tmp1 = parse.select('.page__content_important .page__main-story-container .page__main-story .story-list .story-list__item-title')
+   strnews = str(tmp1[0])
+   start = strnews.find('a href') + 8
+   end = strnews.find('>', start) - 1
+
+   news = tmp1[0].getText() + ' ' + adrsite + strnews[start:end]
+   bot.send_message(message.chat.id, news)
 
 @bot.message_handler(func=lambda message: True, content_types=['text'])
 def answer(message):
