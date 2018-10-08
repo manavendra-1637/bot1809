@@ -9,7 +9,7 @@
 #-------------------------------------------------------------------------------
 
 # -*- coding: utf-8 -*-
-import flask
+from flask import Flask
 import config
 import telebot
 import requests, bs4
@@ -18,20 +18,7 @@ import os
 APP_NAME = 'testbot1809'
 
 bot = telebot.TeleBot(config.token)
-
-server = flask.Flask(__name__)
-
-@server.route('/' + config.token, methods=['POST'])
-def get_message():
-    bot.process_new_updates([types.Update.de_json(
-         flask.request.stream.read().decode("utf-8"))])
-    return "!", 200
-
-@server.route('/', methods=["GET"])
-def index():
-    bot.remove_webhook()
-    bot.set_webhook(url="https://{}.herokuapp.com/{}".format(APP_NAME, config.token))
-    return "Hello from Heroku!", 200
+server = Flask(__name__)
 
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -65,6 +52,18 @@ def answer(message):
 
     if not found:
        bot.send_message(config.muid, message.text)
+
+@server.route('/' + config.token, methods=['POST'])
+def get_message():
+    bot.process_new_updates([types.Update.de_json(
+         flask.request.stream.read().decode("utf-8"))])
+    return "!", 200
+
+@server.route('/', methods=["GET"])
+def index():
+    bot.remove_webhook()
+    bot.set_webhook(url="https://{}.herokuapp.com/{}".format(APP_NAME, config.token))
+    return "Hello from Heroku!", 200
 
 if __name__ == '__main__':
      server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
