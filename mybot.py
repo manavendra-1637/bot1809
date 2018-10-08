@@ -9,7 +9,7 @@
 #-------------------------------------------------------------------------------
 
 # -*- coding: utf-8 -*-
-from flask import Flask
+from flask import Flask, request
 import config
 import telebot
 import requests, bs4
@@ -56,7 +56,7 @@ def answer(message):
 @server.route('/' + config.token, methods=['POST'])
 def get_message():
     bot.process_new_updates([telebot.types.Update.de_json(
-         flask.request.stream.read().decode("utf-8"))])
+         request.stream.read().decode("utf-8"))])
     return "!", 200
 
 @server.route('/', methods=["GET"])
